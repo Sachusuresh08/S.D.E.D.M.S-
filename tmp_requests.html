@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Login / Register</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width:700px; margin:30px auto; }
+    .form { border:1px solid #ddd; padding:16px; margin-bottom:12px; }
+    .hidden { display:none; }
+    ul.flashes { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Login</h1>
+  
+    
+      <ul class="flashes">
+      
+        <li>Please log in to view requests</li>
+      
+      </ul>
+    
+  
+
+  <div id="login" class="form">
+    <form method="post" action="/">
+      <label>Username: <input name="username"></label><br><br>
+      <label>Password: <input type="password" name="password"></label><br><br>
+      <button type="submit">Login</button>
+    </form>
+    <p>New user? <a href="#" id="showRegister">Register here</a></p>
+    
+  </div>
+
+  <div id="register" class="form hidden">
+    <h2>Register</h2>
+    <form method="post" action="/register">
+      <label>Username: <input name="reg_username"></label><br><br>
+      <label>Password: <input type="password" name="reg_password"></label><br><br>
+      <label>Role:
+        <select name="reg_role">
+          <option value="user" selected>user</option>
+          <option value="staff">staff</option>
+        </select>
+      </label>
+      <p style="font-size:0.9em;color:#555">Note: Admin role cannot be assigned via public registration.</p>
+      <button type="submit">Register</button>
+    </form>
+    <p>Already registered? <a href="#" id="showLogin">Login here</a></p>
+  </div>
+
+  <script>
+    document.getElementById('showRegister').addEventListener('click', function(e){ e.preventDefault(); document.getElementById('login').classList.add('hidden'); document.getElementById('register').classList.remove('hidden'); });
+    document.getElementById('showLogin').addEventListener('click', function(e){ e.preventDefault(); document.getElementById('register').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); });
+  </script>
+</body>
+</html>
