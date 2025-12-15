@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pending Requests</title>
+  <style>body{font-family:Arial, sans-serif;max-width:900px;margin:30px auto} table{width:100%;border-collapse:collapse} th,td{border:1px solid #ddd;padding:8px}</style>
+</head>
+<body>
+  <h1>Pending Requests</h1>
+  <p>Logged in as: {{ session.get('user') }} ({{ session.get('role') }})</p>
+  <p><a href="{{ url_for('protected') }}">Back</a></p>
+
+  {% if requests %}
+    <table>
+      <thead><tr><th>ID</th><th>Requester</th><th>Action</th><th>Filename</th><th>Created</th><th>Approvals</th><th>Action</th></tr></thead>
+      <tbody>
+      {% for r in requests %}
+        <tr>
+          <td>{{ r[0] }}</td>
+          <td>{{ r[1] }}</td>
+          <td>{{ r[2] }}</td>
+          <td>{{ r[3] or '' }}</td>
+          <td>{{ r[6] }}</td>
+          <td>{{ approvals.get(r[0],0) }} / {{ total_users }}</td>
+          <td>
+            {% if r[5] == 'pending' %}
+              {% if user_approved.get(r[0],False) %}
+                <span style="color:green">You approved</span>
+              {% else %}
+                <form method="post" action="{{ url_for('approve_request') }}" style="display:inline">
+                  <input type="hidden" name="request_id" value="{{ r[0] }}">
+                  <button type="submit">Approve</button>
+                </form>
+              {% endif %}
+              {% if approvals.get('rejected_' + r[0]|string, False) %}
+                <span style="color:red">You rejected</span>
+              {% else %}
+                <form method="post" action="{{ url_for('reject_request') }}" style="display:inline;margin-left:6px">
+                  <input type="hidden" name="request_id" value="{{ r[0] }}">
+                  <button type="submit">Reject</button>
+                </form>
+              {% endif %}
+            {% elif r[5] == 'approved' %}
+              <span style="color:green">Approved (unanimous)</span>
+              {% if r[2] == 'upload' and r[4] %}
+                <br><a href="{{ url_for('download', file_id=r[4]) }}">Download file</a>
+              {% elif r[2] == 'download' %}
+                <br><a href="{{ url_for('download_request', req_id=r[0]) }}">Requester download</a>
+              {% endif %}
+            {% elif r[5] == 'rejected' %}
+              <span style="color:red">Rejected</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No pending requests.</p>
+  {% endif %}
+
+</body>
+</html>

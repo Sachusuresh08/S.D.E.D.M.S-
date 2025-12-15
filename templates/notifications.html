@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Notifications</title>
+  <style>body{font-family:Arial, sans-serif;max-width:900px;margin:30px auto} ul{list-style:none;padding:0} li{border:1px solid #ddd;padding:8px;margin-bottom:6px}</style>
+</head>
+<body>
+  <h1>Notifications for {{ session.get('user') }}</h1>
+  <p><a href="{{ url_for('protected') }}">Back</a></p>
+  {% if notifications %}
+    <ul>
+      {% for n in notifications %}
+        <li>{{ n[2]|safe }} <br><small>{{ n[3] }}</small></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No notifications.</p>
+  {% endif %}
+</body>
+</html>

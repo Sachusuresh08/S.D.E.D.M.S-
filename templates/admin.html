@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin - Users</title>
+  <style>body{font-family:Arial, sans-serif; max-width:900px; margin:30px auto;} table{width:100%;border-collapse:collapse} th,td{border:1px solid #ddd;padding:8px;text-align:left}</style>
+</head>
+<body>
+  <h1>Admin: Users</h1>
+  <p>Logged in as: {{ session.get('user') }} (<strong>{{ session.get('role') }}</strong>)</p>
+  <p><a href="{{ url_for('protected') }}">Back</a> | <a href="{{ url_for('logout') }}">Logout</a></p>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:green">
+      {% for m in messages %}
+        <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
+  <h2>Create user (admin only)</h2>
+  <form method="post" style="margin-bottom:16px">
+    <label>Username: <input name="create_username"></label>
+    <label>Password: <input type="password" name="create_password"></label>
+    <label>Role:
+      <select name="create_role">
+        <option value="user">user</option>
+        <option value="staff">staff</option>
+        <option value="admin">admin</option>
+      </select>
+    </label>
+    <button type="submit">Create</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Username</th><th>Role</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u[0] }}</td>
+        <td>{{ u[1] }}</td>
+        <td>{{ u[2] }}</td>
+        <td>
+          {% if u[1] != session.get('user') %}
+          <form method="post" style="display:inline">
+            <input type="hidden" name="delete_username" value="{{ u[1] }}">
+            <button type="submit">Delete</button>
+          </form>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>
